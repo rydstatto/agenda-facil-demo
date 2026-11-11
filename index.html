@@ -321,7 +321,7 @@
             return;
           }
           state.apiAvailable = true;
-          demoBadge.textContent = "DEMO CONECTADA · Las reservas de prueba se guardan temporalmente. No introduzcas datos reales.";
+          demoBadge.textContent = "DEMO CONECTADA · Reservas de prueba guardadas en D1. No introduzcas datos reales.";
           services.forEach((service, index) => {
             const button = document.querySelectorAll(".service")[index];
             if (!button) return;
@@ -377,7 +377,7 @@
             if (!response.ok) throw new Error(result.detail || "No se pudo guardar la reserva.");
             document.getElementById("confirmation-message").textContent =
               `${name}, tu ${state.service.toLowerCase()} quedó guardada para el ${fullDateFormat.format(parseLocalDate(state.date))} a las ${state.time}.`;
-            demoBadge.textContent = "DEMO CONECTADA · Reserva de prueba guardada temporalmente. No se envían correos.";
+            demoBadge.textContent = "DEMO CONECTADA · Reserva de prueba guardada en D1. No se envían correos.";
           } catch (error) {
             alert(error.message);
             bookButton.disabled = false;

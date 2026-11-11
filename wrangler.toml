@@ -1,0 +1,9 @@
+name = "agenda-facil-demo"
+pages_build_output_dir = "./dist"
+compatibility_date = "2026-11-11"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "agenda-facil-demo"
+database_id = "00000000-0000-0000-0000-000000000001"
+migrations_dir = "migrations"

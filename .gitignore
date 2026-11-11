@@ -1,8 +1,12 @@
 __pycache__/
 .pytest_cache/
 .venv/
+node_modules/
+dist/
+.wrangler/
 *.py[cod]
 agenda.db
 agenda.db-shm
 agenda.db-wal
 .env
+.dev.vars

@@ -1,0 +1,13 @@
+{
+  "name": "agenda-facil",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test:cloudflare": "node --test tests/cloudflare.test.mjs",
+    "test": "npm run build && npm run test:cloudflare"
+  },
+  "devDependencies": {
+    "wrangler": "^4.160.0"
+  }
+}
