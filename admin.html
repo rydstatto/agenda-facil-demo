@@ -55,11 +55,14 @@
       </form>
       <p class="message" id="message" role="status" aria-live="polite"></p>
       <div class="booking-list" id="booking-list"></div>
-      <p class="privacy">El usuario y contraseña se configuran en variables de entorno del servidor. Este MVP no envía correos y está pensado para ejecutarse localmente; antes de publicarlo con datos reales hay que desplegarlo con HTTPS y revisar privacidad, copias de seguridad y protección antiabuso.</p>
+      <p class="privacy">La demo pública usa datos ficticios y puede perder reservas cuando el servidor gratuito se reinicia. El usuario y contraseña se configuran en las variables de entorno del servidor. No compartas el acceso al panel ni uses estos datos como registro real de clientes.</p>
     </section>
   </main>
+  <script src="config.js"></script>
   <script>
     (() => {
+      const apiBaseUrl = (window.AGENDA_API_BASE_URL || "").replace(/\/+$/, "");
+      const apiUrl = path => `${apiBaseUrl}${path}`;
       const loginForm = document.getElementById("login-form");
       const loginButton = document.getElementById("login-button");
       const message = document.getElementById("message");
@@ -71,7 +74,7 @@
         loginButton.disabled = true;
         message.textContent = "";
         try {
-          const response = await fetch("/api/admin/bookings", { headers: { Authorization: authorization } });
+          const response = await fetch(apiUrl("/api/admin/bookings"), { headers: { Authorization: authorization } });
           if (response.status === 404) {
             throw new Error("El panel solo está disponible cuando el backend está ejecutándose.");
           }
@@ -127,7 +130,7 @@
       async function cancelBooking(id) {
         if (!confirm("¿Quieres cancelar esta cita?")) return;
         try {
-          const response = await fetch(`/api/admin/bookings/${id}/cancel`, {
+          const response = await fetch(apiUrl(`/api/admin/bookings/${id}/cancel`), {
             method: "POST",
             headers: { Authorization: authorization }
           });

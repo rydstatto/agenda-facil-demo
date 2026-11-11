@@ -56,6 +56,21 @@ class BookingApiTests(unittest.TestCase):
         self.assertFalse(slots["09:00"])
         self.assertFalse(slots["10:00"])
 
+    def test_health_check_and_pages_origin_cors(self) -> None:
+        self.assertEqual(self.client.get("/healthz").json(), {"status": "ok"})
+        response = self.client.options(
+            "/api/services",
+            headers={
+                "Origin": "https://rydstatto.github.io",
+                "Access-Control-Request-Method": "GET",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.headers["access-control-allow-origin"],
+            "https://rydstatto.github.io",
+        )
+
     def test_rejects_duplicate_booking(self) -> None:
         self.assertEqual(self.client.post("/api/bookings", json=self.payload).status_code, 201)
         duplicate = self.client.post("/api/bookings", json=self.payload)

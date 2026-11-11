@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Annotated
 
 from fastapi import Depends, FastAPI, HTTPException, Query, status
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.staticfiles import StaticFiles
@@ -54,6 +55,21 @@ async def lifespan(_: FastAPI):
 
 app = FastAPI(title="Agenda Fácil API", version="1.0.0", lifespan=lifespan)
 security = HTTPBasic()
+allowed_origins = [
+    origin.strip()
+    for origin in os.getenv(
+        "FRONTEND_ORIGINS",
+        "https://rydstatto.github.io,http://localhost:8000,http://127.0.0.1:8000",
+    ).split(",")
+    if origin.strip()
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=allowed_origins,
+    allow_credentials=False,
+    allow_methods=["GET", "POST"],
+    allow_headers=["Authorization", "Content-Type"],
+)
 
 
 def connect_database() -> sqlite3.Connection:
@@ -219,6 +235,11 @@ def serialize_booking(row: sqlite3.Row) -> dict[str, object]:
 @app.get("/api/services")
 def list_services() -> list[dict[str, object]]:
     return list(SERVICES.values())
+
+
+@app.get("/healthz")
+def health_check() -> dict[str, str]:
+    return {"status": "ok"}
 
 
 @app.get("/api/availability")
