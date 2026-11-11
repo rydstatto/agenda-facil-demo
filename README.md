@@ -1,23 +1,52 @@
-# Agenda Fácil — demo de reservas
+# Agenda Fácil
 
-Demo visual de una agenda online para profesionales independientes. El ejemplo usa un estudio de manicure ficticio para mostrar la experiencia de reservar desde el móvil o la computadora.
+Aplicación de agenda para profesionales independientes. Incluye una página pública de reservas, una API con FastAPI, persistencia en SQLite y un panel privado para consultar y cancelar citas.
 
-## Probar en tu computadora
+## Requisitos
 
-Abre `index.html` con doble clic. No requiere instalar programas ni configurar un servidor.
+- Python 3.11 o posterior
+- pip
 
-## Publicar gratis con GitHub Pages
+## Ejecutar localmente
 
-1. Crea un repositorio público nuevo en GitHub. Por ejemplo: `agenda-facil-demo`.
-2. Sube `index.html` y `README.md` desde esta carpeta. No subas contraseñas, tokens ni datos de clientes.
-3. En el repositorio, abre **Settings → Pages**.
-4. En **Build and deployment**, elige **Deploy from a branch**, selecciona `main` y la carpeta `/ (root)`, y guarda.
-5. Espera a que termine la publicación. GitHub mostrará el enlace público en **Settings → Pages**; tendrá una forma similar a `https://tu-usuario.github.io/agenda-facil-demo/`.
+Desde esta carpeta, instala las dependencias:
 
-## Enlazar desde el portafolio
+```powershell
+python -m pip install -r requirements.txt
+```
 
-Cuando la demo ya esté publicada, añade una tarjeta en la sección de proyectos del portafolio con el título **Agenda Fácil — reservas online** y un botón **Ver demo** que apunte al enlace de GitHub Pages.
+Configura un usuario y una contraseña solo para el entorno local y arranca el servidor:
 
-## Importante
+```powershell
+$env:ADMIN_USERNAME = "admin"
+$env:ADMIN_PASSWORD = "elige-una-contrasena-larga"
+python -m uvicorn main:app --reload
+```
 
-Esta versión es solo una demostración: no guarda reservas, no bloquea horarios entre clientes y no envía correos. Los servicios, precios, fechas y horarios son ejemplos. Antes de ofrecerla como sistema real, hay que desarrollar un backend, almacenamiento seguro, disponibilidad compartida y envío de confirmaciones.
+Abre <http://127.0.0.1:8000/> para reservar y <http://127.0.0.1:8000/admin> para administrar citas. La documentación interactiva de la API está en <http://127.0.0.1:8000/docs>. En la primera ejecución se crea `agenda.db`, ignorada por Git.
+
+No uses la contraseña de GitHub ni de otro servicio para `ADMIN_PASSWORD`. La contraseña solo vive en la variable de entorno de esa terminal; no la guardes en el repositorio.
+
+## API
+
+- `GET /api/services`: lista los servicios del estudio.
+- `GET /api/availability?date=AAAA-MM-DD&service_id=...`: devuelve horarios y disponibilidad.
+- `POST /api/bookings`: valida y guarda una reserva.
+- `GET /api/admin/bookings`: lista las reservas activas y canceladas; requiere autenticación HTTP Basic.
+- `POST /api/admin/bookings/{id}/cancel`: cancela una reserva; requiere autenticación HTTP Basic.
+
+La API impide reservas solapadas incluso cuando dos solicitudes llegan casi al mismo tiempo, valida el correo y limita las citas a los próximos 90 días, de lunes a sábado.
+
+## Pruebas
+
+```powershell
+python -m unittest discover -s tests -v
+```
+
+Las pruebas usan una base de datos temporal; no modifican las reservas locales.
+
+## GitHub Pages y despliegue
+
+GitHub Pages solo aloja páginas estáticas. El enlace publicado allí conserva el modo demo; la API y SQLite funcionan al ejecutar el servidor. Para ofrecer reservas reales por Internet hace falta desplegar FastAPI en un servicio con HTTPS, persistencia de datos y variables de entorno protegidas, y configurar el frontend para conectarse a ese backend.
+
+Este MVP no envía correos, no procesa pagos y no incluye protección contra abuso ni una política de privacidad para operación pública. No lo uses con datos reales de clientes hasta completar esos requisitos y revisar las normas de privacidad aplicables.
