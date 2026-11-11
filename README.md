@@ -53,7 +53,7 @@ GitHub Pages sirve el frontend estático y Render ejecuta FastAPI. El blueprint 
 1. Abre [Render Blueprint](https://render.com/deploy?repo=https://github.com/rydstatto/agenda-facil-demo) e inicia sesión en Render.
 2. Autoriza el acceso al repositorio `rydstatto/agenda-facil-demo` y crea el servicio definido en `render.yaml`.
 3. Espera el despliegue y copia la URL HTTPS asignada al backend, por ejemplo `https://agenda-facil-api.onrender.com`.
-4. En `config.js`, establece `window.AGENDA_API_BASE_URL` con esa URL (sin barra final), guarda el archivo y súbelo a `main`:
+4. En el repositorio de GitHub, edita `config.js` y establece `window.AGENDA_API_BASE_URL` con esa URL (sin barra final); así los siguientes despliegues de GitHub Pages ya apuntarán al backend:
 
    ```js
    window.AGENDA_API_BASE_URL = "https://TU-SERVICIO.onrender.com";
